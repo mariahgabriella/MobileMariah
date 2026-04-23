@@ -1,0 +1,103 @@
+package com.example.composenavigation
+
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+
+class MainActivity : ComponentActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContent {
+            ListaComprasScreen()
+        }
+    }
+}
+
+data class ItemCompra(
+    val id: Int,
+    val nome: String,
+    val comprado: Boolean = false
+)
+
+@Composable
+fun ListaComprasScreen(modifier: Modifier = Modifier) {
+    val itensLista = remember {
+        mutableStateListOf(
+            ItemCompra(1, "Twilight"),
+            ItemCompra(2, "Rarity"),
+            ItemCompra(3, "Flyttershy"),
+            ItemCompra(4, "Applejack"),
+            ItemCompra(5, "Rainbow Dash"),
+            ItemCompra(6, "Pinkie Pie"),
+            ItemCompra(7, "Celestia"),
+            ItemCompra(8, "Cadence"),
+            ItemCompra(9, "Luna"),
+            ItemCompra(10, "Trixie"),
+            ItemCompra(11, "Starlight"),
+            ItemCompra(12, "Applebloom"),
+            ItemCompra(13, "Sweetbelle"),
+            ItemCompra(14, "Spike"),
+            ItemCompra(15, "Flurryheart"),
+            ItemCompra(16, "Sunbust"),
+            ItemCompra(17, "Cherrylee")
+
+        )
+    }
+
+    LazyColumn(
+        modifier = modifier.fillMaxSize(),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        items(items = itensLista, key = { it.id }) { item ->
+            ItemCompraRow(
+                item = item,
+                onCompradoChange = { marcado ->
+                    val index = itensLista.indexOf(item)
+                    if (index != -1) {
+                        itensLista[index] = item.copy(comprado = marcado)
+                    }
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun ItemCompraRow(
+    item: ItemCompra,
+    modifier: Modifier = Modifier,
+    onCompradoChange: (Boolean) -> Unit
+) {
+    Row(modifier = Modifier.fillMaxWidth()) {
+        Checkbox(
+            checked = item.comprado,
+            onCheckedChange = onCompradoChange,
+        )
+        Text(
+            text = item.nome,
+            style = MaterialTheme.typography.titleMedium
+        )
+    }
+}
+
+// Preview para visualizar a tela no Android Studio
+@Preview(showBackground = true)
+@Composable
+fun PreviewListaCompras() {
+    ListaComprasScreen()
+}
